@@ -110,9 +110,6 @@ const reactionBodies = [
   "Courageous steps inspire extraordinary journeys for all.",
 ];
 
-//assign users to thoughts with associated username
-//assign reaction & associated user to thoughts
-
 const users = [];
 
 const assignUsers = (usernames, emails) => {
@@ -141,12 +138,25 @@ const assignUsers = (usernames, emails) => {
   return users;
 };
 
-const assignThoughts = (usernames, thoughtTexts) => {
+const assignThoughts = (usernames, thoughtTexts, reactionBodies) => {
   const thoughts = thoughtTexts.map((thoughtText) => {
     const randomIndex = Math.floor(Math.random() * usernames.length);
     const username = usernames[randomIndex];
 
-    return { username, thoughtText };
+    const numReactions = Math.floor(
+      Math.random() * (reactionBodies.length + 1)
+    );
+    const reactions = [];
+
+    for (let i = 0; i < numReactions; i++) {
+      const randomUsername =
+        usernames[Math.floor(Math.random() * usernames.length)];
+      const reactionBody =
+        reactionBodies[Math.floor(Math.random() * reactionBodies.length)];
+      reactions.push({ username: randomUsername, reactionBody });
+    }
+
+    return { username, thoughtText, reactions };
   });
 
   return thoughts;
