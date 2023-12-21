@@ -110,17 +110,15 @@ const reactionBodies = [
   "Courageous steps inspire extraordinary journeys for all.",
 ];
 
-const users = [];
-
-const assignUsers = (usernames, emails) => {
+const assignUsers = () => {
   if (usernames.length !== emails.length) {
     console.error("Number of usernames and emails must be equal.");
     return [];
   }
 
-  const assignRandomFriends = (username, allUsernames) => {
-    const potentialFriends = allUsernames.filter(
-      (friend) => friend !== username
+  const assignRandomFriends = () => {
+    const potentialFriends = usernames.filter(
+      (friend) => friend !== this.username
     );
     const shuffledFriends = potentialFriends.sort(() => Math.random() - 0.5);
     const numFriends = Math.floor(Math.random() * (shuffledFriends.length + 1));
@@ -138,7 +136,7 @@ const assignUsers = (usernames, emails) => {
   return users;
 };
 
-const assignThoughts = (usernames, thoughtTexts, reactionBodies) => {
+const assignThoughts = () => {
   const thoughts = thoughtTexts.map((thoughtText) => {
     const randomIndex = Math.floor(Math.random() * usernames.length);
     const username = usernames[randomIndex];

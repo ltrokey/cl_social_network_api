@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const connection = require("../config/connection");
 const { User, Thought } = require("../models");
 const { assignUsers, assignThoughts } = require("./data");
@@ -10,21 +11,21 @@ connection.once("open", async () => {
   console.log("Connected to the database.");
 
   let thoughtCheck = await mongoose.connection.db
-    .collectionNames({ name: "thoughts" })
+    .listCollections({ name: "thoughts" })
     .toArray();
   if (thoughtCheck.length) {
     await connection.dropCollection("thoughts");
   }
 
   let userCheck = await mongoose.connection.db
-    .collectionNames({ name: "users" })
+    .listCollections({ name: "users" })
     .toArray();
   if (userCheck.length) {
     await connection.dropCollection("users");
   }
 
-  const users = assignUsers(usernames, emails);
-  const thoughts = assignThoughts(usernames, thoughtTexts, reactionBodies);
+  const users = assignUsers();
+  const thoughts = assignThoughts();
 
   await User.collection.insertMany(users);
   await Thought.collection.insertMany(thoughts);
