@@ -174,7 +174,7 @@ const assignThoughts = () => {
       reactions.push({ username: randomUsername, reactionBody });
     }
 
-    return { username, thought: thoughtText, reactions };
+    return { username, thoughtText, reactions };
   });
 
   return thoughts;
