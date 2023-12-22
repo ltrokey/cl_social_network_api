@@ -120,9 +120,10 @@ const assignUsers = () => {
 
   const users = usernames.map((username, index) => {
     const email = emails[index];
+    const thoughts = [];
     const friends = [];
 
-    return { username, email, friends };
+    return { username, email, thoughts, friends };
   });
 
   return users;
@@ -173,7 +174,7 @@ const assignThoughts = () => {
       reactions.push({ username: randomUsername, reactionBody });
     }
 
-    return { username, thoughtText, reactions };
+    return { username, thought: thoughtText, reactions };
   });
 
   return thoughts;

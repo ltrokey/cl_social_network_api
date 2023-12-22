@@ -9,7 +9,7 @@ module.exports = {
   // Get all users
   async getUsers(req, res) {
     try {
-      const users = await User.find();
+      let users = await User.find();
       handleSuccess(res, users);
     } catch (err) {
       handleServerError(err, res);
@@ -19,9 +19,7 @@ module.exports = {
   // Get a single user
   async getSingleUser(req, res) {
     try {
-      const user = await User.findOne({ _id: req.params.userId }).select(
-        "-__v"
-      );
+      let user = await User.findOne({ _id: req.params.userId }).select("-__v");
 
       if (!user) {
         handleNotFoundError(res, "No user with that ID");
@@ -37,7 +35,7 @@ module.exports = {
   // Create a new user
   async createUser(req, res) {
     try {
-      const user = await User.create(req.body);
+      let user = await User.create(req.body);
       handleSuccess(res, user);
     } catch (err) {
       handleServerError(err, res);
@@ -47,7 +45,7 @@ module.exports = {
   // Update user
   async updateUser(req, res) {
     try {
-      const user = await User.findOneAndUpdate(
+      let user = await User.findOneAndUpdate(
         { _id: req.params.userId },
         { $set: req.body },
         { runValidators: true, new: true }
@@ -63,10 +61,10 @@ module.exports = {
     }
   },
 
-  // Delete a user and associated apps
+  // Delete a user and associated thoughts
   async deleteUser(req, res) {
     try {
-      const user = await User.findOneAndDelete({ _id: req.params.userId });
+      let user = await User.findOneAndDelete({ _id: req.params.userId });
 
       if (!user) {
         handleNotFoundError(res, "No user with that ID");

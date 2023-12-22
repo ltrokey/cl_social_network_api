@@ -25,10 +25,10 @@ connection.once("open", async () => {
   }
 
   const users = assignUsers();
-  const thoughts = assignThoughts();
-
   await User.collection.insertMany(users);
-  await Thought.collection.insertMany(thoughts);
+
+  const thoughts = assignThoughts();
+  await Thought.collection.updateMany(thoughts);
 
   const userFriends = await addFriends();
   const userIds = userFriends.friends;
