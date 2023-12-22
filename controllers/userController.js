@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Thought } = require("../models");
 const {
   handleServerError,
   handleNotFoundError,
@@ -19,9 +19,9 @@ module.exports = {
   // Get a single user
   async getSingleUser(req, res) {
     try {
-      const user = await User.findOne({ _id: req.params.userId })
-        .select("-__v")
-        .populate("friends");
+      const user = await User.findOne({ _id: req.params.userId }).select(
+        "-__v"
+      );
 
       if (!user) {
         handleNotFoundError(res, "No user with that ID");
@@ -44,6 +44,25 @@ module.exports = {
     }
   },
 
+  // Update user
+  async updateUser(req, res) {
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $set: req.body },
+        { runValidators: true, new: true }
+      );
+
+      if (!user) {
+        return res.status(404).json({ message: "No user id found!" });
+      }
+
+      handleSuccess(res, user);
+    } catch (err) {
+      handleServerError(err, res);
+    }
+  },
+
   // Delete a user and associated apps
   async deleteUser(req, res) {
     try {
@@ -54,8 +73,11 @@ module.exports = {
         return;
       }
 
-      await Application.deleteMany({ _id: { $in: user.thoughts } });
-      handleSuccess(res, { message: "User and associated apps deleted!" });
+      await Thought.deleteMany({ _id: { $in: user.thoughts } });
+      return res.status(200).json({
+        message: "User and associated thoughts deleted!",
+        deletedUser: user,
+      });
     } catch (err) {
       handleServerError(err, res);
     }
