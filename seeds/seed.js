@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const connection = require("../config/connection");
 const { User, Thought } = require("../models");
-const { assignUsers, assignThoughts } = require("./data");
+const { assignUsers, assignThoughts, assignRandomFriends } = require("./data");
 
 connection.on("error", (err) => {
   console.error("MongoDB connection error:", err);
@@ -24,10 +24,14 @@ connection.once("open", async () => {
     await connection.dropCollection("users");
   }
 
-  const users = assignUsers();
+  const users = assignUsers(assignRandomFriends);
   const thoughts = assignThoughts();
 
   await User.collection.insertMany(users);
+  await User.collection.updateMany(
+    {},
+    { $set: { friends: assignRandomFriends(users) } }
+  );
   await Thought.collection.insertMany(thoughts);
 
   try {

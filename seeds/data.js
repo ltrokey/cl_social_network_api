@@ -116,24 +116,39 @@ const assignUsers = () => {
     return [];
   }
 
-  const assignRandomFriends = () => {
-    const potentialFriends = usernames.filter(
-      (friend) => friend !== this.username
-    );
-    const shuffledFriends = potentialFriends.sort(() => Math.random() - 0.5);
-    const numFriends = Math.floor(Math.random() * (shuffledFriends.length + 1));
-    const friends = shuffledFriends.slice(0, numFriends);
-    return friends;
-  };
-
   const users = usernames.map((username, index) => {
     const email = emails[index];
-    const friends = assignRandomFriends(username, usernames);
-
-    return { username, email, friends };
+    return { username, email };
   });
 
-  return users;
+  // Pass the users array to assignRandomFriends
+  const friends = assignRandomFriends(users);
+
+  // Populate the friends property in the users array
+  const usersWithFriends = users.map((user, index) => {
+    return { ...user, friends: friends[index] };
+  });
+
+  return usersWithFriends;
+};
+
+const assignRandomFriends = function (users) {
+  const shuffledFriends = usernames.sort(() => Math.random() - 0.5);
+  const numFriends = Math.floor(Math.random() * shuffledFriends.length);
+
+  const friendsArray = [];
+
+  for (let i = 0; i < numFriends; i++) {
+    const randomUsername =
+      shuffledFriends[Math.floor(Math.random() * shuffledFriends.length)];
+    const friend = users.find((user) => user.username === randomUsername);
+
+    if (friend) {
+      friendsArray.push(friend._id);
+    }
+  }
+
+  return friendsArray;
 };
 
 const assignThoughts = () => {
@@ -160,4 +175,4 @@ const assignThoughts = () => {
   return thoughts;
 };
 
-module.exports = { assignUsers, assignThoughts };
+module.exports = { assignUsers, assignThoughts, assignRandomFriends };
