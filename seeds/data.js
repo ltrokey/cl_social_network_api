@@ -1,3 +1,5 @@
+const { User } = require("../models");
+
 const usernames = [
   "StellarExplorer",
   "QuantumJazz",
@@ -118,37 +120,39 @@ const assignUsers = () => {
 
   const users = usernames.map((username, index) => {
     const email = emails[index];
-    return { username, email };
+    const friends = [];
+
+    return { username, email, friends };
   });
 
-  // Pass the users array to assignRandomFriends
-  const friends = assignRandomFriends(users);
-
-  // Populate the friends property in the users array
-  const usersWithFriends = users.map((user, index) => {
-    return { ...user, friends: friends[index] };
-  });
-
-  return usersWithFriends;
+  return users;
 };
 
-const assignRandomFriends = function (users) {
-  const shuffledFriends = usernames.sort(() => Math.random() - 0.5);
-  const numFriends = Math.floor(Math.random() * shuffledFriends.length);
+const addFriends = async () => {
+  try {
+    const allUsers = await User.find();
 
-  const friendsArray = [];
+    allUsers.forEach((user) => {
+      const numFriends = Math.floor(Math.random() * allUsers.length);
 
-  for (let i = 0; i < numFriends; i++) {
-    const randomUsername =
-      shuffledFriends[Math.floor(Math.random() * shuffledFriends.length)];
-    const friend = users.find((user) => user.username === randomUsername);
+      for (let i = 0; i < numFriends; i++) {
+        let randomUser;
 
-    if (friend) {
-      friendsArray.push(friend._id);
-    }
+        do {
+          randomUser = allUsers[Math.floor(Math.random() * allUsers.length)];
+        } while (randomUser._id.toString() === user._id.toString());
+
+        user.friends.push(randomUser._id);
+      }
+    });
+
+    await Promise.all(allUsers.map((user) => user.save()));
+
+    return { friends: allUsers.map((user) => user._id) };
+  } catch (error) {
+    console.error("Error adding friends:", error);
+    throw error;
   }
-
-  return friendsArray;
 };
 
 const assignThoughts = () => {
@@ -175,4 +179,4 @@ const assignThoughts = () => {
   return thoughts;
 };
 
-module.exports = { assignUsers, assignThoughts, assignRandomFriends };
+module.exports = { assignUsers, assignThoughts, addFriends };
