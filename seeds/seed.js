@@ -1,7 +1,12 @@
 const mongoose = require("mongoose");
 const connection = require("../config/connection");
 const { User, Thought } = require("../models");
-const { assignUsers, assignThoughts, addFriends } = require("./data");
+const {
+  assignUsers,
+  createThoughts,
+  addFriends,
+  assignThoughtId,
+} = require("./data");
 
 connection.on("error", (err) => {
   console.error("MongoDB connection error:", err);
@@ -25,8 +30,7 @@ connection.once("open", async () => {
   }
 
   const users = assignUsers();
-  const thoughts = assignThoughts();
-
+  const thoughts = createThoughts();
   await User.collection.insertMany(users);
   await Thought.collection.insertMany(thoughts);
 
@@ -36,6 +40,18 @@ connection.once("open", async () => {
   await User.collection.updateMany(
     { _id: { $in: userIds } },
     { $push: { friends: { $each: userIds } } }
+  );
+
+  const assignedUsers = await assignThoughtId();
+  const userThoughtIds = assignedUsers.flatMap((user) => user.thoughts);
+
+  await User.collection.updateMany(
+    { _id: { $in: assignedUsers.map((user) => user._id) } },
+    {
+      $push: {
+        thoughts: { $each: userThoughtIds },
+      },
+    }
   );
 
   try {

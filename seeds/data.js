@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Thought } = require("../models");
 
 const usernames = [
   "StellarExplorer",
@@ -156,7 +156,7 @@ const addFriends = async () => {
   }
 };
 
-const assignThoughts = () => {
+const createThoughts = () => {
   const thoughts = thoughtTexts.map((thoughtText) => {
     const randomIndex = Math.floor(Math.random() * usernames.length);
     const username = usernames[randomIndex];
@@ -180,4 +180,27 @@ const assignThoughts = () => {
   return thoughts;
 };
 
-module.exports = { assignUsers, assignThoughts, addFriends };
+const assignThoughtId = async () => {
+  try {
+    const allUsers = await User.find();
+    const allThoughts = await Thought.find();
+
+    for (const thought of allThoughts) {
+      const user = allUsers.find((user) => user.username === thought.username);
+
+      if (user) {
+        user.thoughts.push(thought._id);
+        await user.save();
+      } else {
+        console.error(`User not found for thought: ${thought}`);
+      }
+    }
+
+    return allUsers;
+  } catch (error) {
+    console.error("Error assigning thoughts:", error);
+    throw error;
+  }
+};
+
+module.exports = { assignUsers, createThoughts, addFriends, assignThoughtId };
