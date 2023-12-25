@@ -1,4 +1,4 @@
-const { Thought, Reaction } = require("../models");
+const { Thought, Reaction, User } = require("../models");
 const {
   handleServerError,
   handleNotFoundError,
@@ -19,9 +19,9 @@ module.exports = {
   // Get a single thought
   async getSingleThought(req, res) {
     try {
-      let thought = await Thought.findOne({ _id: req.params.thoughtId }).select(
-        "-__v"
-      );
+      let thought = await Thought.findOne({ _id: req.params.thoughtId });
+
+      console.log("thoughtID", req.params);
 
       if (!thought) {
         handleNotFoundError(res, "No thought with that ID");
@@ -34,10 +34,21 @@ module.exports = {
     }
   },
 
-  // Create a new user
+  // Create a new thought
   async createThought(req, res) {
     try {
       let thought = await Thought.create(req.body);
+      let user = await User.findOneAndUpdate(
+        { _id: req.body.userId },
+        { $addToSet: { thoughts: thought._id } },
+        { new: true }
+      );
+
+      if (!user) {
+        return res.status(404).json({
+          message: "Thought created, but no user found with that ID",
+        });
+      }
       handleSuccess(res, thought);
     } catch (err) {
       handleServerError(err, res);
@@ -63,7 +74,7 @@ module.exports = {
     }
   },
 
-  // Delete a thought and associated apps
+  // Delete a thought and associated reactions
   async deleteThought(req, res) {
     try {
       let thought = await Thought.findOneAndDelete({
@@ -75,7 +86,10 @@ module.exports = {
         return;
       }
 
-      await Reaction.deleteMany({ _id: { $in: thought.reactions } });
+      if (thought.reactions && thought.reactions.length > 0) {
+        await Reaction.deleteMany({ _id: { $in: thought.reactions } });
+      }
+
       return res.status(200).json({
         message: "Thought and associated reactions deleted!",
         deletedThought: thought,
