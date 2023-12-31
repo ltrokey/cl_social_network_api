@@ -100,4 +100,40 @@ module.exports = {
       handleServerError(err, res);
     }
   },
+
+  // Add Reaction
+  async addReaction(req, res) {
+    try {
+      let thought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $addToSet: { reactions: req.body } },
+        { runValidators: true, new: true }
+      );
+      if (!thought) {
+        handleNotFoundError(res, "No thought with that ID");
+        return;
+      }
+      handleSuccess(res, thought);
+    } catch (err) {
+      handleServerError(err, res);
+    }
+  },
+
+  // Remove Reaction
+  async removeReaction(req, res) {
+    try {
+      let thought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $pull: { reactions: { reactionId: req.params.reactionId } } },
+        { runValidators: true, new: true }
+      );
+      if (!thought) {
+        handleNotFoundError(res, "No thought with that ID");
+        return;
+      }
+      handleSuccess(res, "Reaction successfully removed", thought);
+    } catch (err) {
+      handleServerError(err, res);
+    }
+  },
 };
