@@ -86,9 +86,11 @@ module.exports = {
         return;
       }
 
-      if (thought.reactions && thought.reactions.length > 0) {
-        await Reaction.deleteMany({ _id: { $in: thought.reactions } });
-      }
+      await User.findOneAndUpdate(
+        { thoughts: { $in: [thought._id] } },
+        { $pull: { thoughts: thought._id } },
+        { new: true }
+      );
 
       return res.status(200).json({
         message: "Thought and associated reactions deleted!",
