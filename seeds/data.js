@@ -6,21 +6,6 @@ const usernames = [
   "LunarPhoenix",
   "MysticPenguin",
   "NebulaWhisper",
-  "CyberBlossom",
-  "RadiantGrove",
-  "CelestialRaptor",
-  "PixelVortex",
-  "ZenithPioneer",
-  "EchoSphinx",
-  "SolarFalcon",
-  "CosmicCascade",
-  "NimbusJester",
-  "GalacticHarmony",
-  "PonderingPixel",
-  "EtherealBard",
-  "InfinityCrafter",
-  "AuroraMystique",
-  "QuantumSculptor",
 ];
 
 const emails = [
@@ -29,21 +14,6 @@ const emails = [
   "quantum.traveler@example.com",
   "radiant.sunshine@example.com",
   "mystic.enigma@example.com",
-  "stellar.quest@example.com",
-  "ethereal.nomad@example.com",
-  "celestial.dreamer@example.com",
-  "galactic.roamer@example.com",
-  "luminous.adventurer@example.com",
-  "infinite.seeker@example.com",
-  "nebula.wisdom@example.com",
-  "cosmic.spectacle@example.com",
-  "radiant.echo@example.com",
-  "starry.nomad@example.com",
-  "lunar.voyager@example.com",
-  "astral.journey@example.com",
-  "quantum.quest@example.com",
-  "ethereal.odyssey@example.com",
-  "celestial.traverse@example.com",
 ];
 
 const thoughtTexts = [
@@ -60,23 +30,6 @@ const thoughtTexts = [
   "A single thought can change the course of galaxies.",
   "Seek solace in the embrace of quiet moments.",
   "Navigating life's labyrinth, one step at a time.",
-  "Whispered secrets of the moonlight reveal mysteries.",
-  "Journey through the cosmos of imagination.",
-  "Lost in the pages of a story untold.",
-  "Embers of hope glow brightest in the dark.",
-  "Wandering through the tapestry of memories.",
-  "In the symphony of life, find your melody.",
-  "Sunsets are a canvas painted with dreams.",
-  "Beyond the horizon lies the magic of tomorrow.",
-  "Raindrops carry the songs of forgotten wishes.",
-  "Time dances in the footsteps of fleeting moments.",
-  "Stars are the storytellers of the night sky.",
-  "Echoes of laughter resonate through time.",
-  "The heart whispers secrets only the soul can hear.",
-  "Blossoms unfold, revealing the poetry of nature.",
-  "Reflections in still waters reveal hidden depths.",
-  "Between the lines, discover the art of silence.",
-  "Every journey begins with a single, courageous step.",
 ];
 
 const reactionBodies = [
@@ -98,18 +51,6 @@ const reactionBodies = [
   "Lost in a story's pages, an escape we all cherish.",
   "Embers of hope resonate universally.",
   "Memories weave the tapestry of human experience.",
-  "Life's symphony is where we find our shared melody.",
-  "Sunsets are nature's universally admired masterpieces.",
-  "The promise of tomorrow is a horizon for everyone.",
-  "Raindrops carry wishes that connect us all.",
-  "Fleeting moments, embraced by the dance of time.",
-  "Stars tell timeless tales in the night sky.",
-  "Echoes of laughter bridge across generations.",
-  "The soul's secrets connect us on a profound level.",
-  "Nature's poetry unfolds universally in blossoms.",
-  "Hidden depths are revealed in the stillness we share.",
-  "The art of silence speaks universally.",
-  "Courageous steps inspire extraordinary journeys for all.",
 ];
 
 const assignUsers = () => {
@@ -134,7 +75,7 @@ const addFriends = async () => {
     const allUsers = await User.find();
 
     allUsers.forEach((user) => {
-      const numFriends = Math.floor(Math.random() * allUsers.length);
+      const numFriends = Math.floor(Math.random() * 3);
 
       for (let i = 0; i < numFriends; i++) {
         let randomUser;
@@ -161,9 +102,7 @@ const createThoughts = () => {
     const randomIndex = Math.floor(Math.random() * usernames.length);
     const username = usernames[randomIndex];
 
-    const numReactions = Math.floor(
-      Math.random() * (reactionBodies.length + 1)
-    );
+    const numReactions = Math.floor(Math.random() * 5);
     const reactions = [];
 
     for (let i = 0; i < numReactions; i++) {
