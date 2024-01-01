@@ -83,4 +83,39 @@ module.exports = {
       handleServerError(err, res);
     }
   },
+  // Add Friend
+  async addFriend(req, res) {
+    try {
+      let user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $addToSet: { friends: req.body } },
+        { runValidators: true, new: true }
+      );
+      if (!user) {
+        handleNotFoundError(res, "No user with that ID");
+        return;
+      }
+      handleSuccess(res, "Friend successfully added", user);
+    } catch (err) {
+      handleServerError(err, res);
+    }
+  },
+
+  // Delete Friend
+  async removeFriend(req, res) {
+    try {
+      let user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $pull: { friends: req.params.friendId } },
+        { new: true }
+      );
+      if (!user) {
+        handleNotFoundError(res, "No user with that ID");
+        return;
+      }
+      handleSuccess(res, "Friend successfully removed", user);
+    } catch (err) {
+      handleServerError(err, res);
+    }
+  },
 };
