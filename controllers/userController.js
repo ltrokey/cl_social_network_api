@@ -52,7 +52,8 @@ module.exports = {
       );
 
       if (!user) {
-        return res.status(404).json({ message: "No user id found!" });
+        handleNotFoundError(res, "No user with that ID");
+        return;
       }
 
       handleSuccess(res, user);
@@ -74,15 +75,12 @@ module.exports = {
       if (user.thoughts && user.thoughts.length > 0) {
         await Thought.deleteMany({ _id: { $in: user.thoughts } });
       }
-
-      return res.status(200).json({
-        message: "User and associated thoughts deleted!",
-        deletedUser: user,
-      });
+      handleSuccess(res, "User and associated thoughts deleted!", user);
     } catch (err) {
       handleServerError(err, res);
     }
   },
+
   // Add Friend
   async addFriend(req, res) {
     try {

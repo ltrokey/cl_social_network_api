@@ -45,9 +45,8 @@ module.exports = {
       );
 
       if (!user) {
-        return res.status(404).json({
-          message: "Thought created, but no user found with that ID",
-        });
+        handleNotFoundError(res, "No user with that ID");
+        return;
       }
       handleSuccess(res, thought);
     } catch (err) {
@@ -65,7 +64,8 @@ module.exports = {
       );
 
       if (!thought) {
-        return res.status(404).json({ message: "No thought id found!" });
+        handleNotFoundError(res, "No thought with that ID");
+        return;
       }
 
       handleSuccess(res, thought);
@@ -91,11 +91,7 @@ module.exports = {
         { $pull: { thoughts: thought._id } },
         { new: true }
       );
-
-      return res.status(200).json({
-        message: "Thought and associated reactions deleted!",
-        deletedThought: thought,
-      });
+      handleSuccess(res, "Thought and associated reactions deleted!", thought);
     } catch (err) {
       handleServerError(err, res);
     }
