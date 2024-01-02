@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[Link to Presentation](add link here)
+[Link to Presentation](https://drive.google.com/file/d/1knxc1y2xNb1bM4yWyQK4IrwFcihnQ7Ix/view)
 
 ## Description
 
